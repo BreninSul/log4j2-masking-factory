@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration debug="true" package="files.logging">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout>
+                <disableAnsi>false</disableAnsi>
+                <charset>UTF-8</charset>
+                <pattern>%style{%date{ISO8601}}{cyan} [%t] %highlight{%p}{FATAL=Bright red bold , ERROR=Bright red, WARN=Bright yellow bold, INFO=Bright green bold, DEBUG=Bright blue bold, TRACE=Bright black} %style{%-20logger} : %m%n
+                </pattern>
+            </PatternLayout>
+        </Console>
+        <RollingFile name="RollingFile"
+                     fileName="${env:LOG_FOLDER:-logs}/${env:LOG_FILENAME:-app.log}"
+                     filePattern="${env:LOG_FOLDER:-logs}/${env:LOG_FILENAME:-app.log}.%d{yyyyMMdd}-%i.gz">
+            <PatternLayout>
+                <charset>UTF-8</charset>
+                <disableAnsi>false</disableAnsi>
+                <pattern>%date{ISO8601} [%t] %p %-20logger : %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <OnStartupTriggeringPolicy/>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="${env:LOG4J2_LEVEL_ROOT:-INFO}">
+            <AppenderRef level="${env:LOG4J2_LEVEL_CONSOLE:-INFO}" ref="Console"/>
+            <AppenderRef level="${env:LOG4J2_LEVEL_FILE:-INFO}" ref="RollingFile"/>
+        </Root>
+    </Loggers>
+</configuration>
