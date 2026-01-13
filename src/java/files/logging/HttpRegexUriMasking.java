@@ -31,10 +31,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class HttpRegexUriMasking implements HttpUriMasking {
-    protected final Collection<String> fields;
-    protected final String emptyBody = "";
-    protected final String maskedBody = "<MASKED>";
-    protected final Map<String, Collection<Pattern>> regexList;
+    protected Collection<String> fields;
+    protected String emptyBody = "";
+    protected String maskedBody = "<MASKED>";
+    protected Map<String, Collection<Pattern>> regexList;
 
     public HttpRegexUriMasking(Collection<String> fields) {
         this.fields = fields;
@@ -99,7 +99,7 @@ public class HttpRegexUriMasking implements HttpUriMasking {
         return maskedMessage.toString();
     }
 
-    private static class Range {
+    protected static class Range {
         int first;
         int last;
 

@@ -31,10 +31,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class HttpRegexJsonBodyMasking implements HttpBodyMasking {
-    protected final Collection<String> fields;
-    protected final String emptyBody = "";
-    protected final String maskedBody = "<MASKED>";
-    protected final Map<String, Collection<Pattern>> regexList;
+    protected Collection<String> fields;
+    protected String emptyBody = "";
+    protected String maskedBody = "<MASKED>";
+    protected Map<String, Collection<Pattern>> regexList;
 
     public HttpRegexJsonBodyMasking(Collection<String> fields) {
         this.fields = fields;
@@ -63,17 +63,17 @@ public class HttpRegexJsonBodyMasking implements HttpBodyMasking {
         }
         StringBuilder maskedMessage = new StringBuilder(message);
 
-        List<Range> ranges = regexList.entrySet().stream()
+        List<LoggingRange> ranges = regexList.entrySet().stream()
                 .filter(entry -> message.contains("\"" + entry.getKey() + "\""))
                 .flatMap(entry -> entry.getValue().stream())
                 .flatMap(regex -> {
                     Matcher matcher = regex.matcher(maskedMessage);
-                    List<Range> matches = new ArrayList<>();
+                    List<LoggingRange> matches = new ArrayList<>();
                     while (matcher.find()) {
                         // Kotlin: matcher.start(2), end(2)-1
                         int groupStart = matcher.start(2);
                         int groupEnd = matcher.end(2) - 1;
-                        matches.add(new Range(groupStart, groupEnd));
+                        matches.add(new LoggingRange(groupStart, groupEnd));
                     }
                     return matches.stream();
                 })
@@ -81,10 +81,10 @@ public class HttpRegexJsonBodyMasking implements HttpBodyMasking {
                 .collect(Collectors.toList());
 
         // Filter ranges contained in others
-        List<Range> finalRanges = new ArrayList<>();
-        for (Range range : ranges) {
+        List<LoggingRange> finalRanges = new ArrayList<>();
+        for (LoggingRange range : ranges) {
             boolean isContained = false;
-            for (Range r : ranges) {
+            for (LoggingRange r : ranges) {
                 if (r != range && r.first <= range.first && r.last >= range.last) {
                     isContained = true;
                     break;
@@ -96,7 +96,7 @@ public class HttpRegexJsonBodyMasking implements HttpBodyMasking {
         }
 
         // Apply replacements
-        for (Range range : finalRanges) {
+        for (LoggingRange range : finalRanges) {
             maskedMessage.replace(range.first, range.last + 1, maskedBody);
         }
 
@@ -108,13 +108,5 @@ public class HttpRegexJsonBodyMasking implements HttpBodyMasking {
         return HttpBodyType.JSON;
     }
 
-    private static class Range {
-        int first;
-        int last;
 
-        Range(int first, int last) {
-            this.first = first;
-            this.last = last;
-        }
-    }
 }

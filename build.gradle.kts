@@ -12,7 +12,7 @@ plugins {
 val javaVersion = JavaVersion.VERSION_17
 
 group = "io.github.breninsul"
-version = "1.0.0"
+version = "1.0.1"
 
 
 
@@ -52,14 +52,14 @@ repositories {
 
 
 dependencies {
-    implementation("org.apache.logging.log4j:log4j-core:2.25.3")
+    api("org.apache.logging.log4j:log4j-core:2.25.3")
     compileOnly("org.apache.logging.log4j:log4j-core:2.25.3")
     annotationProcessor("org.apache.logging.log4j:log4j-core:2.25.3")
 
     testImplementation("org.mockito:mockito-core:5.18.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    implementation("com.google.re2j:re2j:1.7")
+    api("com.google.re2j:re2j:1.8")
 }
 
 
