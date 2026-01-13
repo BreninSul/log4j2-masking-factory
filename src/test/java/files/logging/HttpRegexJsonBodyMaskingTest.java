@@ -132,9 +132,9 @@ public class HttpRegexJsonBodyMaskingTest {
         // "desc": "This is a \"quoted\" word and a backslash \\"
         // In string literal: "This is a \"quoted\" word and a backslash \\"
         // JSON: {"desc": "This is a \"quoted\" word and a backslash \\"}
-        String input = "{\"desc\": \"This is a \\\"quoted\\\" word and a backslash \\\\\", \"other\": 1}";
+        String input = "123{\"desc\": \"This is a \\\"quoted\\\" word and a backslash \\\\\", \"other\": 1}123";
 
-        String expected = "{\"desc\": \"<MASKED>\", \"other\": 1}";
+        String expected = "123{\"desc\": \"<MASKED>\", \"other\": 1}123";
         String masked = masking.mask(input);
         assertEquals(expected, masked);
     }
