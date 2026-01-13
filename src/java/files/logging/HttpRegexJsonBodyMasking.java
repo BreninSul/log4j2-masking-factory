@@ -45,8 +45,8 @@ public class HttpRegexJsonBodyMasking implements HttpBodyMasking {
             // "($f)"\s*:\s*([+-]?\d*(?:\.\d+)?(?:[eE][+-]?\d+)?|true|false)\s*(,|\})
             patterns.add(Pattern.compile(
                     "\"(" + f + ")\"\\s*:\\s*([+-]?\\d*(?:\\.\\d+)?(?:[eE][+-]?\\d+)?|true|false)\\s*(,|\\})"));
-            // string: "($f)"\s*:\s*"((\\"|[^"])*)"
-            patterns.add(Pattern.compile("\"(" + f + ")\"\\s*:\\s*\"((\\\\\"|[^\"])*)\""));
+            // string: "($f)"\s*:\s*"((\\.|[^"\\])*)"
+            patterns.add(Pattern.compile("\"(" + f + ")\"\\s*:\\s*\"((\\\\.|[^\"\\\\])*)\""));
             // array: "($f)"\s*:\s*\[(\s*(?:"(?:\\.|[^"\\])*"\s*,?\s*)*)\]
             patterns.add(
                     Pattern.compile("\"(" + f + ")\"\\s*:\\s*\\[(\\s*(?:\"(?:\\\\.|[^\"\\\\])*\"\\s*,?\\s*)*)\\]"));

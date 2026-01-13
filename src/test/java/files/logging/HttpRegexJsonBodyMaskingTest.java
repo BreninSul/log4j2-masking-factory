@@ -84,13 +84,14 @@ public class HttpRegexJsonBodyMaskingTest {
     public void testMaskJsonArray() {
         HttpRegexJsonBodyMasking masking = new HttpRegexJsonBodyMasking(Collections.singletonList("secrets"));
 
-        String input = "{\"secrets\": [\"a\",\"b\"], \"other\": 1}";
+        String input = "{\"secrets\": [\"a\",\"b\",\"This is a \\\"quoted\\\" word and a backslash \\\\\"], \"other\": 1}";
         // Regex for array: ... : \s* \[ ... \]
         // Group 2 is content inside []
         // Result: "secrets": [<MASKED>]
 
         String expected = "{\"secrets\": [<MASKED>], \"other\": 1}";
-        assertEquals(expected, masking.mask(input));
+        String mask = masking.mask(input);
+        assertEquals(expected, mask);
     }
 
     @Test
@@ -122,5 +123,19 @@ public class HttpRegexJsonBodyMaskingTest {
         masking = new HttpRegexJsonBodyMasking(Arrays.asList("amount", "amount2", "sci"));
         expected = "{\"amount\": <MASKED>, \"other\": \"val\", \"amount2\": <MASKED>, \"sci\": <MASKED>}";
         assertEquals(expected, masking.mask(input));
+        assertEquals(expected, masking.mask(input));
+    }
+
+    @Test
+    public void testMaskJsonStringWithEscapedQuote() {
+        HttpRegexJsonBodyMasking masking = new HttpRegexJsonBodyMasking(Collections.singletonList("desc"));
+        // "desc": "This is a \"quoted\" word and a backslash \\"
+        // In string literal: "This is a \"quoted\" word and a backslash \\"
+        // JSON: {"desc": "This is a \"quoted\" word and a backslash \\"}
+        String input = "{\"desc\": \"This is a \\\"quoted\\\" word and a backslash \\\\\", \"other\": 1}";
+
+        String expected = "{\"desc\": \"<MASKED>\", \"other\": 1}";
+        String masked = masking.mask(input);
+        assertEquals(expected, masked);
     }
 }
