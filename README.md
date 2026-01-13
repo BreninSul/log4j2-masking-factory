@@ -32,7 +32,7 @@ Include the library in your build:
 
 **Gradle (Kotlin)**
 ```kotlin
-implementation("io.github.breninsul:log4j2-masking-factory:1.0.1")
+implementation("io.github.breninsul:log4j2-masking-factory:1.0.2")
 ```
 
 ### 2. Configure Log4j2

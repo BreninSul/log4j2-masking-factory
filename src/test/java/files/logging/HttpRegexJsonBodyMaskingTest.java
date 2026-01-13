@@ -104,4 +104,23 @@ public class HttpRegexJsonBodyMaskingTest {
         String expected = "{\"details\": {<MASKED>}, \"other\": 2}";
         assertEquals(expected, masking.mask(input));
     }
+
+    @Test
+    public void testMaskJsonFloat() {
+        HttpRegexJsonBodyMasking masking = new HttpRegexJsonBodyMasking(Collections.singletonList("amount"));
+
+        String input = "{\"amount\": 12.34, \"other\": \"val\", \"amount2\": -0.005, \"sci\": 1.2e3}";
+        // It should mask amount and amount2 if they were in the list.
+        // Wait, I only added "amount" to the list.
+        // Let's add all of them for this test, or just test one.
+        // Let's test standard float.
+
+        String expected = "{\"amount\": <MASKED>, \"other\": \"val\", \"amount2\": -0.005, \"sci\": 1.2e3}";
+        assertEquals(expected, masking.mask(input));
+
+        // Test with multiple fields
+        masking = new HttpRegexJsonBodyMasking(Arrays.asList("amount", "amount2", "sci"));
+        expected = "{\"amount\": <MASKED>, \"other\": \"val\", \"amount2\": <MASKED>, \"sci\": <MASKED>}";
+        assertEquals(expected, masking.mask(input));
+    }
 }

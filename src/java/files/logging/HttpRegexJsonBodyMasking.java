@@ -41,8 +41,10 @@ public class HttpRegexJsonBodyMasking implements HttpBodyMasking {
         Map<String, Collection<Pattern>> map = new HashMap<>();
         for (String f : fields) {
             List<Pattern> patterns = new ArrayList<>();
-            // int or bool: "($f)"\s*:\s*([+-]?\d+|true|false)\s*(,|\})
-            patterns.add(Pattern.compile("\"(" + f + ")\"\\s*:\\s*([+-]?\\d+|true|false)\\s*(,|\\})"));
+            // int, float or bool:
+            // "($f)"\s*:\s*([+-]?\d*(?:\.\d+)?(?:[eE][+-]?\d+)?|true|false)\s*(,|\})
+            patterns.add(Pattern.compile(
+                    "\"(" + f + ")\"\\s*:\\s*([+-]?\\d*(?:\\.\\d+)?(?:[eE][+-]?\\d+)?|true|false)\\s*(,|\\})"));
             // string: "($f)"\s*:\s*"((\\"|[^"])*)"
             patterns.add(Pattern.compile("\"(" + f + ")\"\\s*:\\s*\"((\\\\\"|[^\"])*)\""));
             // array: "($f)"\s*:\s*\[(\s*(?:"(?:\\.|[^"\\])*"\s*,?\s*)*)\]
@@ -107,6 +109,5 @@ public class HttpRegexJsonBodyMasking implements HttpBodyMasking {
     public HttpBodyType type() {
         return HttpBodyType.JSON;
     }
-
 
 }
